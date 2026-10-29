@@ -26,6 +26,19 @@ class AuthenticationTests(APITestCase):
         self.assertEqual(response.data['user']['email'], 'testuser@example.com')
         self.assertTrue(User.objects.filter(username='testuser').exists())
 
+    def test_user_registration_without_email(self):
+        payload = {
+            'username': 'noemailuser',
+            'password': 'SecurePassword123!',
+            'password_confirm': 'SecurePassword123!',
+        }
+        response = self.client.post(self.register_url, payload)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn('token', response.data)
+        self.assertEqual(response.data['user']['username'], 'noemailuser')
+        self.assertEqual(response.data['user']['email'], '')
+        self.assertTrue(User.objects.filter(username='noemailuser').exists())
+
     def test_user_registration_password_mismatch(self):
         payload = {
             'username': 'mismatchuser',

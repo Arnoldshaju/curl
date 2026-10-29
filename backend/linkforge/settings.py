@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'linkforge.wsgi.application'
 
 # Database configuration
 # When in Docker or production, Postgres is used.
-# During local development/testing without Postgres, SQLite is used automatically.
+# During local development/testing without Postgres or when host is unreachable, SQLite is used automatically.
 POSTGRES_DB = os.environ.get('POSTGRES_DB')
 POSTGRES_USER = os.environ.get('POSTGRES_USER', 'postgres')
 POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', '')
@@ -79,11 +79,28 @@ POSTGRES_HOST = os.environ.get('POSTGRES_HOST', '')
 POSTGRES_PORT = os.environ.get('POSTGRES_PORT', '5432')
 USE_SQLITE = os.environ.get('USE_SQLITE', 'False').lower() in ('true', '1', 'yes')
 
-# In test mode or when explicitly set, use SQLite for isolated tests
+import socket
 import sys
-IS_TESTING = 'test' in sys.argv or 'pytest' in sys.argv[0] or USE_SQLITE
+from urllib.parse import urlparse
 
-if POSTGRES_DB and POSTGRES_HOST and not IS_TESTING:
+def is_host_resolvable(hostname: str) -> bool:
+    if not hostname:
+        return False
+    try:
+        socket.getaddrinfo(hostname, None)
+        return True
+    except Exception:
+        return False
+
+IS_TESTING = 'test' in sys.argv or 'pytest' in sys.argv[0] or USE_SQLITE
+postgres_available = (
+    POSTGRES_DB and
+    POSTGRES_HOST and
+    not IS_TESTING and
+    is_host_resolvable(POSTGRES_HOST)
+)
+
+if postgres_available:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -165,7 +182,19 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Redis & Cache Configuration
 REDIS_URL = os.environ.get('REDIS_URL')
-if REDIS_URL and not IS_TESTING:
+
+def is_redis_resolvable(url: str) -> bool:
+    if not url:
+        return False
+    try:
+        host = urlparse(url).hostname
+        if not host:
+            return False
+        return is_host_resolvable(host)
+    except Exception:
+        return False
+
+if REDIS_URL and not IS_TESTING and is_redis_resolvable(REDIS_URL):
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.redis.RedisCache',

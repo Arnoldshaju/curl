@@ -104,11 +104,10 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Email Address <span className="text-rose-400">*</span>
+                Email Address <span className="text-slate-400 text-[10px] lowercase font-normal">(optional)</span>
               </label>
               <input
                 type="email"
-                required
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

@@ -11,6 +11,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=False, allow_blank=True, default='')
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password_confirm = serializers.CharField(write_only=True, required=True)
 
@@ -19,9 +20,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password', 'password_confirm')
 
     def validate_email(self, value):
-        if User.objects.filter(email__iexact=value).exists():
+        if not value or not value.strip():
+            return ''
+        clean = value.strip().lower()
+        if User.objects.filter(email__iexact=clean).exists():
             raise serializers.ValidationError("A user with that email already exists.")
-        return value.lower()
+        return clean
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
