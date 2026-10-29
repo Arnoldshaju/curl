@@ -1,0 +1,680 @@
+openapi: 3.0.3
+info:
+  title: LinkForge API
+  version: 1.0.0
+  description: Enterprise URL Shortener, Analytics, and Link Management Platform API.
+paths:
+  /api/auth/login/:
+    post:
+      operationId: api_auth_login_create
+      description: Authenticate user and retrieve their access token.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: Login successful
+        '400':
+          description: Invalid credentials
+  /api/auth/logout/:
+    post:
+      operationId: api_auth_logout_create
+      description: Invalidate current user auth token.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Logged out successfully
+  /api/auth/register/:
+    post:
+      operationId: api_auth_register_create
+      description: Register a new user account and obtain an authentication token.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetail'
+          description: User registered successfully
+        '400':
+          description: Validation error
+  /api/auth/user/:
+    get:
+      operationId: api_auth_user_retrieve
+      description: Retrieve profile details for the authenticated user.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetail'
+          description: ''
+  /api/health/:
+    get:
+      operationId: api_health_retrieve
+      description: Comprehensive system health check inspecting Database and Redis
+        connectivity.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: System is operational
+  /api/links/:
+    get:
+      operationId: api_links_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedShortenedURLList'
+          description: ''
+    post:
+      operationId: api_links_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShortenedURLRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateShortenedURLRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateShortenedURLRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateShortenedURL'
+          description: ''
+  /api/links/{id}/:
+    get:
+      operationId: api_links_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortenedURL'
+          description: ''
+    put:
+      operationId: api_links_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShortenedURLRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateShortenedURLRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateShortenedURLRequest'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateShortenedURL'
+          description: ''
+    patch:
+      operationId: api_links_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateShortenedURLRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateShortenedURLRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateShortenedURLRequest'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateShortenedURL'
+          description: ''
+    delete:
+      operationId: api_links_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/links/{id}/analytics/:
+    get:
+      operationId: api_links_analytics_retrieve
+      description: Get detailed analytics and breakdown for a specific shortened link.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkAnalyticsSummary'
+          description: ''
+  /api/public-create/:
+    post:
+      operationId: api_public_create_create
+      description: Public endpoint to create a quick shortened URL without logging
+        in.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicCreateShortenedURLRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PublicCreateShortenedURLRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PublicCreateShortenedURLRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortenedURL'
+          description: ''
+        '400':
+          description: Validation error
+  /r/{code}/:
+    get:
+      operationId: r_retrieve
+      description: Redirect client to the stored destination URL and record analytics.
+      parameters:
+      - in: path
+        name: code
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        required: true
+      tags:
+      - r
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '302':
+          description: Temporary Redirect to destination URL
+        '404':
+          description: Short link not found
+        '410':
+          description: Short link has expired
+components:
+  schemas:
+    ClickAnalyticsItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        clicked_at:
+          type: string
+          format: date-time
+        referrer:
+          type: string
+          maxLength: 512
+        referrer_domain:
+          type: string
+          maxLength: 255
+        device_category:
+          type: string
+          maxLength: 50
+        browser:
+          type: string
+          maxLength: 100
+        os:
+          type: string
+          maxLength: 100
+        country:
+          type: string
+          maxLength: 100
+      required:
+      - id
+    CreateShortenedURL:
+      type: object
+      properties:
+        original_url:
+          type: string
+          maxLength: 2048
+        custom_alias:
+          type: string
+          maxLength: 50
+        title:
+          type: string
+          default: ''
+          maxLength: 255
+        description:
+          type: string
+          default: ''
+        expires_in_days:
+          type: integer
+          maximum: 365
+          minimum: 1
+        expires_at:
+          type: string
+          format: date-time
+      required:
+      - original_url
+    CreateShortenedURLRequest:
+      type: object
+      properties:
+        original_url:
+          type: string
+          minLength: 1
+          maxLength: 2048
+        custom_alias:
+          type: string
+          maxLength: 50
+        title:
+          type: string
+          default: ''
+          maxLength: 255
+        description:
+          type: string
+          default: ''
+        expires_in_days:
+          type: integer
+          maximum: 365
+          minimum: 1
+        expires_at:
+          type: string
+          format: date-time
+      required:
+      - original_url
+    LinkAnalyticsSummary:
+      type: object
+      properties:
+        total_clicks:
+          type: integer
+        clicks_by_device:
+          type: array
+          items: {}
+        clicks_by_browser:
+          type: array
+          items: {}
+        clicks_by_referrer:
+          type: array
+          items: {}
+        clicks_over_time:
+          type: array
+          items: {}
+        recent_clicks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClickAnalyticsItem'
+      required:
+      - clicks_by_browser
+      - clicks_by_device
+      - clicks_by_referrer
+      - clicks_over_time
+      - recent_clicks
+      - total_clicks
+    PaginatedShortenedURLList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShortenedURL'
+    PatchedUpdateShortenedURLRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        is_active:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+    PublicCreateShortenedURLRequest:
+      type: object
+      description: Simplified serializer for anonymous public link creation.
+      properties:
+        original_url:
+          type: string
+          minLength: 1
+          maxLength: 2048
+        custom_alias:
+          type: string
+          maxLength: 50
+        title:
+          type: string
+          default: ''
+          maxLength: 255
+        description:
+          type: string
+          default: ''
+        expires_in_days:
+          type: integer
+          maximum: 365
+          minimum: 1
+        expires_at:
+          type: string
+          format: date-time
+      required:
+      - original_url
+    ShortenedURL:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        original_url:
+          type: string
+          format: uri
+          maxLength: 2048
+        short_code:
+          type: string
+          readOnly: true
+        custom_alias:
+          type: string
+          nullable: true
+          maxLength: 64
+        effective_code:
+          type: string
+          readOnly: true
+        short_url:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        is_active:
+          type: boolean
+        is_expired:
+          type: boolean
+          readOnly: true
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        click_count:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - click_count
+      - created_at
+      - effective_code
+      - id
+      - is_expired
+      - original_url
+      - short_code
+      - short_url
+      - updated_at
+    UpdateShortenedURL:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        is_active:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+    UpdateShortenedURLRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        is_active:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+    UserDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          title: Email address
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date_joined
+      - id
+      - username
+    UserLoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    UserRegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          title: Email address
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password_confirm:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - password_confirm
+      - username
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

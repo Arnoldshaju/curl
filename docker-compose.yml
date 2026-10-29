@@ -1,0 +1,149 @@
+services:
+  # ============================================================================
+  # Database Service (PostgreSQL 16)
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: linkforge-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-linkforge_db}
+      POSTGRES_USER: ${POSTGRES_USER:-linkforge_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-linkforge_secure_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-linkforge_user} -d ${POSTGRES_DB:-linkforge_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ============================================================================
+  # In-Memory Cache & Message Broker (Redis 7)
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: linkforge-redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  # ============================================================================
+  # Backend API & Gunicorn (Django 5)
+  # ============================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: linkforge-backend
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn linkforge.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 60"
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY:-linkforge-production-grade-secret-key-replace-me}
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend,web,nginx
+      - POSTGRES_DB=${POSTGRES_DB:-linkforge_db}
+      - POSTGRES_USER=${POSTGRES_USER:-linkforge_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-linkforge_secure_password}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - CORS_ALLOWED_ORIGINS=http://localhost,http://localhost:3000,http://127.0.0.1:3000
+      - CSRF_TRUSTED_ORIGINS=http://localhost,http://localhost:3000,http://localhost:8000
+      - NEXT_PUBLIC_SHORT_DOMAIN=http://localhost:8000/r
+      - FRONTEND_URL=http://localhost:3000
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # ============================================================================
+  # Background Task Worker (Celery)
+  # ============================================================================
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: linkforge-celery-worker
+    restart: unless-stopped
+    command: celery -A linkforge worker -l INFO -c 2
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY:-linkforge-production-grade-secret-key-replace-me}
+      - POSTGRES_DB=${POSTGRES_DB:-linkforge_db}
+      - POSTGRES_USER=${POSTGRES_USER:-linkforge_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-linkforge_secure_password}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
+        condition: service_healthy
+
+  # ============================================================================
+  # Frontend Web Application (Next.js 16)
+  # ============================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: linkforge-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_SHORT_DOMAIN=http://localhost:8000/r
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # ============================================================================
+  # Reverse Proxy & SSL Gateway (Nginx)
+  # ============================================================================
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: linkforge-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./infrastructure/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
