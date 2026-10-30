@@ -120,7 +120,7 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center">
         <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-4" />
-        <p className="text-sm text-slate-400">Loading your LinkForge dashboard...</p>
+        <p className="text-sm text-slate-400">Loading your Curl dashboard...</p>
       </div>
     );
   }
@@ -250,7 +250,7 @@ export default function DashboardPage() {
               onClick={() => setCreateModalOpen(true)}
               className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors"
             >
-              Forge Your First Link
+              Create Your First Link
             </button>
           </div>
         ) : (

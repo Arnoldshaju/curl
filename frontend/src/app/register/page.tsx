@@ -65,10 +65,10 @@ export default function RegisterPage() {
             </div>
           </div>
           <span className="text-2xl font-bold tracking-tight text-white">
-            Link<span className="text-blue-500">Forge</span>
+            Curl
           </span>
         </Link>
-        <h2 className="text-2xl font-bold tracking-tight text-white">Create your LinkForge account</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-white">Create your Curl account</h2>
         <p className="mt-2 text-sm text-slate-400">
           Already have an account?{' '}
           <Link href="/login" className="font-medium text-blue-400 hover:text-blue-300 transition-colors">

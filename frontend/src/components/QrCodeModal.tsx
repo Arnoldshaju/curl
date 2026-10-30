@@ -40,7 +40,7 @@ export default function QrCodeModal({ link, onClose }: QrCodeModalProps) {
     const pngUrl = canvasRef.current.toDataURL('image/png');
     const downloadLink = document.createElement('a');
     downloadLink.href = pngUrl;
-    downloadLink.download = `linkforge-qr-${link.effective_code}.png`;
+    downloadLink.download = `curl-qr-${link.effective_code}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);

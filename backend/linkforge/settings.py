@@ -156,8 +156,8 @@ REST_FRAMEWORK = {
 
 # Spectacular OpenAPI Documentation Settings
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'LinkForge API',
-    'DESCRIPTION': 'Enterprise URL Shortener, Analytics, and Link Management Platform API.',
+    'TITLE': 'Curl API',
+    'DESCRIPTION': 'URL Shortener, Analytics, and Link Management Platform API.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'COMPONENT_SPLIT_REQUEST': True,
@@ -176,7 +176,7 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     origin.strip() for origin in os.environ.get(
         'CSRF_TRUSTED_ORIGINS',
-        'http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000'
+        'http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://localhost:8001'
     ).split(',') if origin.strip()
 ]
 
@@ -224,6 +224,12 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# When Redis broker is not reachable locally (e.g. running on Mac outside Docker),
+# execute tasks eagerly in-process without network latency or timeout
+if not is_redis_resolvable(CELERY_BROKER_URL):
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True
 
 # LinkForge Application Defaults
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')

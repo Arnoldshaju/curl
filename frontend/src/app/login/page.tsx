@@ -48,7 +48,7 @@ export default function LoginPage() {
             </div>
           </div>
           <span className="text-2xl font-bold tracking-tight text-white">
-            Link<span className="text-blue-500">Forge</span>
+            Curl
           </span>
         </Link>
         <h2 className="text-2xl font-bold tracking-tight text-white">Sign in to your account</h2>

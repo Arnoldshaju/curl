@@ -28,7 +28,7 @@ export default function PublicShortener() {
     try {
       const link = await api.links.publicCreate(clean);
       setResult(link);
-      toast('Link forged successfully!', 'success');
+      toast('Short link created successfully!', 'success');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to create short link.';
       toast(msg, 'error');
@@ -65,7 +65,7 @@ export default function PublicShortener() {
             {isLoading ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Forging...
+                Shortening...
               </span>
             ) : (
               <>
@@ -132,14 +132,14 @@ export default function PublicShortener() {
       )}
 
       {/* Trust indicator */}
-      <div className="mt-3 flex items-center justify-center gap-4 text-[11px] text-slate-500">
-        <span className="flex items-center gap-1">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500/80" /> Anti-SSRF Protection
+      <div className="mt-3 flex items-center justify-center gap-4 text-xs text-slate-500">
+        <span className="flex items-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 text-blue-400" /> Fast &amp; Secure
         </span>
         <span>&bull;</span>
-        <span>Sub-millisecond Redis Cache</span>
+        <span>Instant Redirects</span>
         <span>&bull;</span>
-        <span>Auto-expires in 30 days</span>
+        <span>Free to Use</span>
       </div>
 
       {qrModalOpen && result && (
