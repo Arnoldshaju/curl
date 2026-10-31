@@ -1,47 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-figtree), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #000000;
+  color: #ffffff;
+  font-family: var(--font-figtree), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.font-handwriting {
-  font-family: var(--font-caveat), 'Caveat', 'Comic Sans MS', cursive, sans-serif;
+/* Atmospheric Glowing Blue Layer */
+.ambient-glow-layer {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: #03070d;
+  background-image:
+    radial-gradient(ellipse 900px 700px at 85% 15%, rgba(0, 168, 255, 0.32) 0%, rgba(0, 100, 200, 0.16) 45%, transparent 75%),
+    radial-gradient(ellipse 800px 600px at 15% 45%, rgba(0, 140, 255, 0.22) 0%, rgba(0, 60, 140, 0.10) 45%, transparent 75%),
+    radial-gradient(ellipse 950px 750px at 50% 80%, rgba(0, 168, 255, 0.24) 0%, rgba(0, 90, 180, 0.12) 50%, transparent 80%),
+    radial-gradient(ellipse 700px 500px at 90% 90%, rgba(0, 168, 255, 0.28) 0%, rgba(0, 120, 220, 0.14) 40%, transparent 70%),
+    radial-gradient(ellipse 650px 500px at 10% 95%, rgba(0, 140, 255, 0.20) 0%, transparent 65%),
+    linear-gradient(180deg, #02060b 0%, #010408 50%, #02060b 100%);
 }
 
-@keyframes pulse-subtle {
-  0%, 100% {
-    opacity: 0.9;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.02);
-  }
-}
-
-.animate-pulse-subtle {
-  animation: pulse-subtle 4s ease-in-out infinite;
+/* Crisp Grid Pattern across all black backgrounds */
+.grid-overlay-layer {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background-size: 44px 44px;
+  background-image:
+    linear-gradient(to right, rgba(180, 215, 245, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(180, 215, 245, 0.22) 1px, transparent 1px);
 }
 
 /* Hide Next.js Development Indicator badge */

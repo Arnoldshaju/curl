@@ -1,3 +1,4 @@
+from backend.linkforge import settings
 from datetime import timedelta
 from django.core.cache import cache
 from django.db.models import Count, Q
@@ -11,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParameter
 
+# pyrefly: ignore[missing-import]
 from apps.analytics.tasks import record_click
 from .models import ShortenedURL, ClickAnalytics
 from .serializers import (
@@ -281,6 +283,7 @@ class RedirectView(APIView):
     def render_expired_response(self, request, code):
         if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
             return JsonResponse({'error': 'Short link has expired.', 'code': code}, status=410)
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
         html = f"""
         <!DOCTYPE html>
         <html lang="en">
@@ -289,13 +292,13 @@ class RedirectView(APIView):
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Link Expired — Curl</title>
             <style>
-                body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
-                .card {{ background: #1e293b; border: 1px solid #334155; padding: 2.5rem; border-radius: 1rem; max-width: 440px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }}
+                body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000000; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
+                .card {{ background: #090d16; border: 1px solid #1e293b; padding: 2.5rem; border-radius: 1rem; max-width: 440px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }}
                 .badge {{ background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; display: inline-block; margin-bottom: 1rem; }}
                 h1 {{ font-size: 1.5rem; margin-bottom: 0.5rem; color: #ffffff; }}
                 p {{ color: #94a3b8; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; }}
-                a {{ background: #3b82f6; color: white; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 500; display: inline-block; transition: background 0.2s; }}
-                a:hover {{ background: #2563eb; }}
+                a {{ background: #00a8ff; color: #000000; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 9999px; font-weight: 600; display: inline-block; transition: background 0.2s; }}
+                a:hover {{ background: #0096e6; }}
             </style>
         </head>
         <body>
@@ -303,7 +306,7 @@ class RedirectView(APIView):
                 <span class="badge">410 Gone</span>
                 <h1>Link Has Expired</h1>
                 <p>The shortened link <code>/{code}</code> has reached its expiration date and is no longer available.</p>
-                <a href="/">Go to Curl Home</a>
+                <a href="{frontend_url}">Go to Curl Home</a>
             </div>
         </body>
         </html>
@@ -313,6 +316,7 @@ class RedirectView(APIView):
     def render_not_found_response(self, request, code):
         if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
             return JsonResponse({'error': 'Short link not found.', 'code': code}, status=404)
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
         html = f"""
         <!DOCTYPE html>
         <html lang="en">
@@ -321,13 +325,13 @@ class RedirectView(APIView):
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Link Not Found — Curl</title>
             <style>
-                body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
-                .card {{ background: #1e293b; border: 1px solid #334155; padding: 2.5rem; border-radius: 1rem; max-width: 440px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }}
+                body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000000; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
+                .card {{ background: #090d16; border: 1px solid #1e293b; padding: 2.5rem; border-radius: 1rem; max-width: 440px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }}
                 .badge {{ background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; display: inline-block; margin-bottom: 1rem; }}
                 h1 {{ font-size: 1.5rem; margin-bottom: 0.5rem; color: #ffffff; }}
                 p {{ color: #94a3b8; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; }}
-                a {{ background: #3b82f6; color: white; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 500; display: inline-block; transition: background 0.2s; }}
-                a:hover {{ background: #2563eb; }}
+                a {{ background: #00a8ff; color: #000000; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 9999px; font-weight: 600; display: inline-block; transition: background 0.2s; }}
+                a:hover {{ background: #0096e6; }}
             </style>
         </head>
         <body>
@@ -335,7 +339,7 @@ class RedirectView(APIView):
                 <span class="badge">404 Not Found</span>
                 <h1>Short Link Not Found</h1>
                 <p>The link <code>/{code}</code> could not be found. It may have been deleted, or the address was mistyped.</p>
-                <a href="/">Go to Curl Home</a>
+                <a href="{frontend_url}">Go to Curl Home</a>
             </div>
         </body>
         </html>
@@ -345,6 +349,7 @@ class RedirectView(APIView):
     def render_inactive_response(self, request, code):
         if 'application/json' in request.META.get('HTTP_ACCEPT', ''):
             return JsonResponse({'error': 'Short link is disabled by owner.', 'code': code}, status=403)
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
         html = f"""
         <!DOCTYPE html>
         <html lang="en">
@@ -353,13 +358,13 @@ class RedirectView(APIView):
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Link Disabled — Curl</title>
             <style>
-                body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
-                .card {{ background: #1e293b; border: 1px solid #334155; padding: 2.5rem; border-radius: 1rem; max-width: 440px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }}
+                body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000000; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
+                .card {{ background: #090d16; border: 1px solid #1e293b; padding: 2.5rem; border-radius: 1rem; max-width: 440px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }}
                 .badge {{ background: #64748b; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; display: inline-block; margin-bottom: 1rem; }}
                 h1 {{ font-size: 1.5rem; margin-bottom: 0.5rem; color: #ffffff; }}
                 p {{ color: #94a3b8; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; }}
-                a {{ background: #3b82f6; color: white; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 500; display: inline-block; transition: background 0.2s; }}
-                a:hover {{ background: #2563eb; }}
+                a {{ background: #00a8ff; color: #000000; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 9999px; font-weight: 600; display: inline-block; transition: background 0.2s; }}
+                a:hover {{ background: #0096e6; }}
             </style>
         </head>
         <body>
@@ -367,7 +372,7 @@ class RedirectView(APIView):
                 <span class="badge">Link Paused</span>
                 <h1>Link Disabled</h1>
                 <p>The owner of link <code>/{code}</code> has temporarily disabled it.</p>
-                <a href="/">Go to Curl Home</a>
+                <a href="{frontend_url}">Go to Curl Home</a>
             </div>
         </body>
         </html>

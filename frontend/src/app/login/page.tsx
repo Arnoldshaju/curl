@@ -7,6 +7,8 @@ import { Link2, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { useToast } from '@/components/Toast';
 
+import { CurlLogoMark } from '@/components/CurlLogoMark';
+
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
@@ -36,17 +38,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-transparent flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#00a8ff]/10 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center">
         <Link href="/" className="inline-flex items-center gap-2.5 mb-6 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-amber-500 p-0.5 shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Link2 className="w-5 h-5 text-blue-400" />
-            </div>
-          </div>
+          <CurlLogoMark className="w-8 h-8 group-hover:scale-105 transition-transform" />
           <span className="text-2xl font-bold tracking-tight text-white">
             Curl
           </span>

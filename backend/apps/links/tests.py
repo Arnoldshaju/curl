@@ -6,8 +6,11 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 
+# pyrefly: ignore[missing-import]
 from apps.links.models import ShortenedURL, ClickAnalytics
+# pyrefly: ignore[missing-import]
 from apps.links.services import validate_safe_url
+# pyrefly: ignore[missing-import]
 from apps.analytics.tasks import process_click_record
 
 

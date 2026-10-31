@@ -118,7 +118,7 @@ export default function DashboardPage() {
 
   if (authLoading || (!isAuthenticated && !links.length)) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center">
+      <div className="min-h-screen bg-transparent flex flex-col justify-center items-center">
         <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-4" />
         <p className="text-sm text-slate-400">Loading your Curl dashboard...</p>
       </div>
@@ -126,7 +126,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="min-h-screen bg-transparent flex flex-col">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">

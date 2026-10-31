@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Caveat } from 'next/font/google';
+import { Figtree, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
 import { ToastProvider } from '@/components/Toast';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const figtree = Figtree({
+  variable: '--font-figtree',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
@@ -14,15 +16,10 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-const caveat = Caveat({
-  variable: '--font-caveat',
-  subsets: ['latin'],
-});
-
 export const metadata: Metadata = {
-  title: 'Curl — URL Shortener & Analytics Platform',
+  title: 'Curl — URL Shortener',
   description:
-    'Modern, fast, and privacy-conscious URL shortening and analytics platform.',
+    'A complete URL shortener with custom slugs, click analytics, and referrer tracking.',
   keywords: ['URL shortener', 'Link management', 'Analytics', 'Curl', 'Next.js', 'Django', 'Redis', 'PostgreSQL'],
 };
 
@@ -32,11 +29,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} dark`}>
-      <body className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased selection:bg-blue-600 selection:text-white flex flex-col">
+    <html lang="en" className={`${figtree.variable} ${geistMono.variable} dark`}>
+      <body className="min-h-screen bg-black text-white font-sans antialiased selection:bg-[#00a8ff] selection:text-black flex flex-col relative">
         <AuthProvider>
           <ToastProvider>
-            {children}
+            <div className="relative z-10 flex flex-col min-h-screen">
+              {children}
+            </div>
           </ToastProvider>
         </AuthProvider>
       </body>

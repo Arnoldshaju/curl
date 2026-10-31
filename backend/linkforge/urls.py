@@ -7,7 +7,13 @@ from drf_spectacular.views import (
 )
 from apps.links.views import RedirectView, HealthCheckView
 
+from django.conf import settings
+from django.views.generic.base import RedirectView as DjangoRedirectView
+
 urlpatterns = [
+    # Root / welcome route redirects to frontend shortener landing page
+    path('', DjangoRedirectView.as_view(url=getattr(settings, 'FRONTEND_URL', 'http://localhost:3000'), permanent=False), name='backend-root'),
+
     path('admin/', admin.site.urls),
 
     # Health check
