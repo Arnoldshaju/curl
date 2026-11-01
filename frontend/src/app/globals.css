@@ -9,6 +9,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-figtree), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-outfit), var(--font-figtree), sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -53,3 +54,64 @@ nextjs-portal,
 [data-nextjs-toast] {
   display: none !important;
 }
+
+/* ── Landing page typography (matches Link template) ───────────────── */
+.landing h1,
+.landing h2,
+.landing h3,
+.landing h4 {
+  font-family: var(--font-figtree), "Figtree", sans-serif;
+}
+
+.landing h1 {
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -2.4px;
+  text-wrap: balance;
+}
+
+.landing h2 {
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -1.28px;
+}
+
+.landing h3 {
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.96px;
+}
+
+.landing h4 {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+/* Fluid hero headline */
+.landing h1.display {
+  font-size: clamp(2.75rem, -2rem + 8vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+@media (max-width: 950px) {
+  .landing h1 {
+    font-size: 32px;
+    line-height: 40px;
+    letter-spacing: -1.28px;
+  }
+  .landing h2 {
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.96px;
+  }
+  .landing h3 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+  .landing h4 {
+    font-size: 18px;
+    line-height: 28px;
+  }
+}
+

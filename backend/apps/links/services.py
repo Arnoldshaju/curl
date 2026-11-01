@@ -22,6 +22,17 @@ def is_private_ip(ip_str: str) -> bool:
     """Check if an IP address is private, loopback, link-local, or multicast."""
     try:
         ip = ipaddress.ip_address(ip_str)
+        # Handle RFC 6052 NAT64 well-known prefix (64:ff9b::/96)
+        if isinstance(ip, ipaddress.IPv6Address) and ip in ipaddress.IPv6Network('64:ff9b::/96'):
+            embedded_v4 = ipaddress.IPv4Address(ip.packed[-4:])
+            return (
+                embedded_v4.is_private or
+                embedded_v4.is_loopback or
+                embedded_v4.is_link_local or
+                embedded_v4.is_multicast or
+                embedded_v4.is_reserved or
+                embedded_v4.is_unspecified
+            )
         return (
             ip.is_private or
             ip.is_loopback or
