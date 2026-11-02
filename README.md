@@ -1,6 +1,6 @@
 <div align="center">
 
-# LinkForge
+# Curl
 
 **Enterprise-Grade URL Shortening, Analytics & Link Management Platform**
 
