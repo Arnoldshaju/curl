@@ -10,7 +10,7 @@ load_dotenv(BASE_DIR.parent / '.env')
 load_dotenv(BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'insecure-dev-key-for-local-linkforge-testing-only')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'insecure-dev-key-for-local-curl-testing-only')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
 
-    # LinkForge Local Apps
+    # Curl Local Apps
     'apps.authentication',
     'apps.links',
     'apps.analytics',
@@ -210,7 +210,7 @@ else:
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'linkforge-local-cache',
+            'LOCATION': 'curl-local-cache',
             'TIMEOUT': 300,
         }
     }
@@ -231,7 +231,7 @@ if not is_redis_resolvable(CELERY_BROKER_URL):
     CELERY_TASK_ALWAYS_EAGER = True
     CELERY_TASK_EAGER_PROPAGATES = True
 
-# LinkForge Application Defaults
+# Curl Application Defaults
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 DEFAULT_EXPIRY_DAYS = int(os.environ.get('DEFAULT_EXPIRY_DAYS', '30'))
 MAX_EXPIRY_DAYS = int(os.environ.get('MAX_EXPIRY_DAYS', '365'))

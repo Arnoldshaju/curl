@@ -4,18 +4,18 @@ services:
   # ============================================================================
   postgres:
     image: postgres:16-alpine
-    container_name: linkforge-postgres
+    container_name: curl-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-linkforge_db}
-      POSTGRES_USER: ${POSTGRES_USER:-linkforge_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-linkforge_secure_password}
+      POSTGRES_DB: ${POSTGRES_DB:-curl_db}
+      POSTGRES_USER: ${POSTGRES_USER:-curl_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-curl_secure_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-linkforge_user} -d ${POSTGRES_DB:-linkforge_db}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-curl_user} -d ${POSTGRES_DB:-curl_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,7 +26,7 @@ services:
   # ============================================================================
   redis:
     image: redis:7-alpine
-    container_name: linkforge-redis
+    container_name: curl-redis
     restart: unless-stopped
     command: redis-server --save 60 1 --loglevel warning
     volumes:
@@ -47,18 +47,18 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: linkforge-backend
+    container_name: curl-backend
     restart: unless-stopped
     command: >
       sh -c "python manage.py migrate &&
              gunicorn linkforge.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 60"
     environment:
       - DEBUG=False
-      - SECRET_KEY=${SECRET_KEY:-linkforge-production-grade-secret-key-replace-me}
+      - SECRET_KEY=${SECRET_KEY:-curl-production-grade-secret-key-replace-me}
       - ALLOWED_HOSTS=localhost,127.0.0.1,backend,web,nginx
-      - POSTGRES_DB=${POSTGRES_DB:-linkforge_db}
-      - POSTGRES_USER=${POSTGRES_USER:-linkforge_user}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-linkforge_secure_password}
+      - POSTGRES_DB=${POSTGRES_DB:-curl_db}
+      - POSTGRES_USER=${POSTGRES_USER:-curl_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-curl_secure_password}
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - REDIS_URL=redis://redis:6379/0
@@ -89,15 +89,15 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: linkforge-celery-worker
+    container_name: curl-celery-worker
     restart: unless-stopped
     command: celery -A linkforge worker -l INFO -c 2
     environment:
       - DEBUG=False
-      - SECRET_KEY=${SECRET_KEY:-linkforge-production-grade-secret-key-replace-me}
-      - POSTGRES_DB=${POSTGRES_DB:-linkforge_db}
-      - POSTGRES_USER=${POSTGRES_USER:-linkforge_user}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-linkforge_secure_password}
+      - SECRET_KEY=${SECRET_KEY:-curl-production-grade-secret-key-replace-me}
+      - POSTGRES_DB=${POSTGRES_DB:-curl_db}
+      - POSTGRES_USER=${POSTGRES_USER:-curl_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-curl_secure_password}
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - REDIS_URL=redis://redis:6379/0
@@ -116,7 +116,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: linkforge-frontend
+    container_name: curl-frontend
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -132,7 +132,7 @@ services:
   # ============================================================================
   nginx:
     image: nginx:1.25-alpine
-    container_name: linkforge-nginx
+    container_name: curl-nginx
     restart: unless-stopped
     ports:
       - "80:80"

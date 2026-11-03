@@ -1,6 +1,6 @@
 # AWS EC2 Production Deployment Guide
 
-This guide details how to deploy the LinkForge platform to an Amazon Web Services (AWS) EC2 virtual machine using Docker Compose, Nginx, and Let's Encrypt TLS.
+This guide details how to deploy the Curl platform to an Amazon Web Services (AWS) EC2 virtual machine using Docker Compose, Nginx, and Let's Encrypt TLS.
 
 ---
 
@@ -100,8 +100,8 @@ flowchart LR
 
 3. **Clone your repository:**
    ```bash
-   git clone https://github.com/your-username/linkforge.git /opt/linkforge
-   cd /opt/linkforge
+   git clone https://github.com/your-username/curl.git /opt/curl
+   cd /opt/curl
    ```
 
 4. **Create the production environment file (`.env`):**
@@ -150,12 +150,12 @@ To ensure persistent data is safely preserved:
 
 1. **Manual database dump:**
    ```bash
-   docker compose exec postgres pg_dump -U linkforge_user -d linkforge_db | gzip > backup_$(date +%F).sql.gz
+   docker compose exec postgres pg_dump -U ${POSTGRES_USER:-curl_user} -d ${POSTGRES_DB:-curl_db} | gzip > backup_$(date +%F).sql.gz
    ```
 
 2. **Automated Daily Backup via Cron:**
    ```bash
    crontab -e
    # Add daily backup at 03:00 UTC uploading to private S3 bucket
-   0 3 * * * docker compose -f /opt/linkforge/docker-compose.yml exec -T postgres pg_dump -U linkforge_user linkforge_db | gzip | aws s3 cp - s3://your-private-backup-bucket/db/linkforge_$(date +\%F).sql.gz
+   0 3 * * * docker compose -f /opt/curl/docker-compose.yml exec -T postgres pg_dump -U curl_user curl_db | gzip | aws s3 cp - s3://your-private-backup-bucket/db/curl_$(date +\%F).sql.gz
    ```

@@ -23,7 +23,7 @@ An independently architected, production-grade URL shortener platform with colli
 
 ## 📖 Table of Contents
 
-- [Why LinkForge?](#-why-linkforge)
+- [Why Curl?](#-why-curl)
 - [Key Features](#-key-features)
 - [Architecture & Data Flow](#-architecture--data-flow)
 - [Technology Stack](#-technology-stack)
@@ -37,7 +37,7 @@ An independently architected, production-grade URL shortener platform with colli
 
 ---
 
-## 🚀 Why LinkForge?
+## 🚀 Why Curl?
 
 A URL shortener seems trivial until real-world production engineering questions arise:
 - **What happens on short-code collisions under high write load?**
@@ -45,7 +45,7 @@ A URL shortener seems trivial until real-world production engineering questions 
 - **How do you prevent malicious actors from using your platform to perform Server-Side Request Forgery (SSRF) against internal VPC subnets or AWS instance metadata (`169.254.169.254`)?**
 - **How do you track granular click metrics without violating visitor privacy (GDPR)?**
 
-LinkForge was designed from the ground up to solve these production challenges with clean architectural separation.
+Curl was designed from the ground up to solve these production challenges with clean architectural separation.
 
 ---
 
@@ -107,8 +107,8 @@ flowchart TD
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/linkforge.git
-   cd linkforge
+   git clone https://github.com/your-username/curl.git
+   cd curl
    ```
 
 2. **Configure your environment file:**
@@ -168,7 +168,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 🧪 Testing & Quality Gates
 
 ### Backend Unit & Integration Tests
-LinkForge includes a test suite covering authentication, URL validation, anti-SSRF protections, collision loops, link expiration, user isolation, and click analytics.
+Curl includes a test suite covering authentication, URL validation, anti-SSRF protections, collision loops, link expiration, user isolation, and click analytics.
 
 ```bash
 cd backend
@@ -206,7 +206,7 @@ For the full endpoint reference and sample payloads, see [`docs/api.md`](docs/ap
 
 ## ☁️ AWS EC2 Deployment & Cost Breakdown
 
-LinkForge includes a complete deployment guide in [`docs/deployment-aws.md`](docs/deployment-aws.md).
+Curl includes a complete deployment guide in [`docs/deployment-aws.md`](docs/deployment-aws.md).
 
 ### Realistic Monthly Hosting Estimate (us-east-1):
 - **EC2 `t3.small` Instance (2 vCPU, 2GB RAM):** ~$15.18 / month
@@ -231,13 +231,13 @@ For full security architecture details, see [`docs/security.md`](docs/security.m
 
 ## 📜 Attribution & Origin
 
-LinkForge was designed and implemented by **Arnold Shaju**.
+Curl was designed and implemented by **Arnold Shaju**.
 
 The conceptual problem space—specifically the exploration of collision handling, conditional writes, expiration semantics, and asynchronous analytics decoupling—was inspired by:
 - **Reference Project:** `aws-serverless-url-shortener` by [YourCloudDude](https://github.com/yourclouddude/aws-serverless-url-shortener)
 
 **Technical Independence:**
-While the reference project was an educational serverless exploration implemented with AWS SAM, Python Lambdas, and Amazon DynamoDB with no frontend or authentication, **LinkForge** is built from the ground up as a complete production-grade SaaS product using a completely separate stack (Next.js, TypeScript, Django, PostgreSQL, Redis, Celery, and Docker Compose). See [`ACKNOWLEDGMENTS.md`](ACKNOWLEDGMENTS.md) for full details.
+While the reference project was an educational serverless exploration implemented with AWS SAM, Python Lambdas, and Amazon DynamoDB with no frontend or authentication, **Curl** is built from the ground up as a complete production-grade SaaS product using a completely separate stack (Next.js, TypeScript, Django, PostgreSQL, Redis, Celery, and Docker Compose). See [`ACKNOWLEDGMENTS.md`](ACKNOWLEDGMENTS.md) for full details.
 
 ---
 

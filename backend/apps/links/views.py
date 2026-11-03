@@ -1,4 +1,4 @@
-from backend.linkforge import settings
+from django.conf import settings
 from datetime import timedelta
 from django.core.cache import cache
 from django.db.models import Count, Q

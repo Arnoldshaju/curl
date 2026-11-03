@@ -14,7 +14,7 @@ from apps.links.services import validate_safe_url
 from apps.analytics.tasks import process_click_record
 
 
-class LinkForgeCoreTests(APITestCase):
+class CurlCoreTests(APITestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(username='alice', password='Password123!')
         self.token1 = Token.objects.create(user=self.user1)

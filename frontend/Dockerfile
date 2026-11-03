@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Frontend Multi-Stage Dockerfile for LinkForge (Next.js)
+# Frontend Multi-Stage Dockerfile for Curl (Next.js)
 # ------------------------------------------------------------------------------
 
 FROM node:22-alpine AS deps

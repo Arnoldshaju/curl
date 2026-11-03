@@ -1,6 +1,6 @@
-# LinkForge REST API Documentation
+# Curl REST API Documentation
 
-The LinkForge API is fully compliant with OpenAPI 3.0 and can be explored interactively at:
+The Curl API is fully compliant with OpenAPI 3.0 and can be explored interactively at:
 - **Swagger UI:** `http://localhost:8000/api/docs/`
 - **ReDoc:** `http://localhost:8000/api/redoc/`
 - **Raw OpenAPI Schema:** `http://localhost:8000/api/schema/`

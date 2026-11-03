@@ -1,12 +1,12 @@
-# LinkForge Security Architecture & Safeguards
+# Curl Security Architecture & Safeguards
 
-This document outlines the security controls, validation boundaries, and threat mitigation models engineered into LinkForge.
+This document outlines the security controls, validation boundaries, and threat mitigation models engineered into Curl.
 
 ---
 
 ## 1. Threat Mitigation Matrix
 
-| Potential Vulnerability | Risk | LinkForge Defense Mechanism |
+| Potential Vulnerability | Risk | Curl Defense Mechanism |
 |---|---|---|
 | **Server-Side Request Forgery (SSRF)** | Attacker inputs `http://169.254.169.254/` to steal AWS instance role credentials or internal network IPs | Dynamic DNS resolution checking IP against RFC 1918 private subnets, loopbacks (`127.0.0.1`), link-local (`169.254.0.0/16`), and AWS metadata service (`169.254.169.254`). |
 | **Short Code Collision / Overwrite** | Two concurrent requests generate the same code, overwriting existing destination | Cryptographic random generation + Django database atomic transactions (`with transaction.atomic()`) with unique index constraints and retry loops. |

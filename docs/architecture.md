@@ -1,6 +1,6 @@
-# LinkForge Architecture Deep Dive
+# Curl Architecture Deep Dive
 
-This document details the system design, component responsibilities, data flow, and trade-offs of the LinkForge URL shortener and telemetry platform.
+This document details the system design, component responsibilities, data flow, and trade-offs of the Curl URL shortener and telemetry platform.
 
 ```mermaid
 flowchart TD
@@ -67,7 +67,7 @@ Visitor -> Nginx -> RedirectView -> Redis Cache Hit -> HTTP 302 (Immediate Retur
 
 ## 3. Collision Resistance & Race Condition Prevention
 
-Generating random short codes can result in collisions as volume scales. LinkForge employs a dual safeguard:
+Generating random short codes can result in collisions as volume scales. Curl employs a dual safeguard:
 1. **Cryptographic Randomness:** Codes use an alphanumeric alphabet (`[a-zA-Z0-9]`) with 62^7 (over 3.5 trillion) potential combinations.
 2. **Atomic Transactional Check:**
    ```python
@@ -83,7 +83,7 @@ Generating random short codes can result in collisions as volume scales. LinkFor
 
 ## 4. Architectural Comparison: Relational (PostgreSQL) vs Serverless (DynamoDB)
 
-| Dimension | LinkForge (PostgreSQL + Redis + Celery) | Educational Reference (Serverless DynamoDB) |
+| Dimension | Curl (PostgreSQL + Redis + Celery) | Educational Reference (Serverless DynamoDB) |
 |---|---|---|
 | **Data Relationships** | Relational: Foreign keys link Users to URLs and URLs to Clicks | Single key-value table: `short_code -> destination_url` |
 | **Link Ownership & Auth**| Token & Session Auth; isolated per-user link ownership | Anonymous only; no user isolation or login |
